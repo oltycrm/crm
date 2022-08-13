@@ -1,0 +1,68 @@
+<div>
+  <.form
+    let={f}
+    for={@changeset}
+    id="client-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save"
+  >
+    <div class="overflow-hidden ">
+      <div class="m-1">
+        <div class="grid grid-cols-6 gap-6">
+          <div class="col-span-6 sm:col-span-3">
+            <%= label(f, :name, "Имя", class: "block text-sm font-medium text-neutral-700") %>
+            <%= text_input(f, :name,
+              class:
+                "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-neutral-300 rounded-md"
+            ) %>
+            <%= error_tag(f, :name) %>
+          </div>
+
+          <div class="col-span-6 sm:col-span-3">
+            <%= label(f, :phone, "Телефон", class: "block text-sm font-medium text-neutral-700") %>
+            <%= text_input(f, :phone,
+              class:
+                "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-neutral-300 rounded-md"
+            ) %>
+            <%= error_tag(f, :phone) %>
+          </div>
+
+          <div class="col-span-6 sm:col-span-3">
+            <%= label(f, :tg, "Telegram", class: "block text-sm font-medium text-neutral-700") %>
+            <%= text_input(f, :tg,
+              class:
+                "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-neutral-300 rounded-md"
+            ) %>
+            <%= error_tag(f, :tg) %>
+          </div>
+
+          <div class="col-span-6 sm:col-span-3">
+            <%= label(f, :wa, "WhatsApp", class: "block text-sm font-medium text-neutral-700") %>
+            <%= text_input(f, :wa,
+              class:
+                "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-neutral-300 rounded-md"
+            ) %>
+            <%= error_tag(f, :wa) %>
+          </div>
+
+          <div class="col-span-6 sm:col-span-3">
+            <%= label(f, :avito, "Avito", class: "block text-sm font-medium text-neutral-700") %>
+            <%= text_input(f, :avito,
+              class:
+                "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-neutral-300 rounded-md"
+            ) %>
+            <%= error_tag(f, :avito) %>
+          </div>
+        </div>
+      </div>
+      <div class="px-4 pt-6 text-right sm:px-6">
+        <%= submit("Сохранить",
+          phx_disable_with: "Saving...",
+          class:
+            "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        ) %>
+      </div>
+    </div>
+  </.form>
+</div>

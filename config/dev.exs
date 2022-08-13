@@ -26,6 +26,7 @@ config :crm, CrmWeb.Endpoint,
   secret_key_base: "sQcvR6bk6WP6oEEprhKtxyJfMREHyzrd7lbxm3RbBMg7x4tfM0scZkbbTxsSfzVI",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
   ]
 

@@ -1,0 +1,238 @@
+<div class="py-8 px-4 flex flex-col md:flex-row justify-between">
+  <div>
+    <h3 class="text-xl leading-6 font-medium text-neutral-900"><%= @card.name %></h3>
+    <h3 class="text-lg  mt-2 leading-6 font-bold text-neutral-900"><%= @card.card_number %></h3>
+  </div>
+
+  <div class="mt-2">
+    <span><%= link("Изменить", to: Routes.card_path(@conn, :edit, @card)) %></span>
+    <span><%= link("Назад", class: "ml-2", to: Routes.card_path(@conn, :index)) %></span>
+  </div>
+</div>
+<!-- This example requires Tailwind CSS v2.0+ -->
+<div class="bg-white shadow overflow-hidden sm:rounded-lg">
+  <div class="border-t border-neutral-200 px-4 py-5 sm:p-0">
+    <dl class="sm:divide-y sm:divide-neutral-200">
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Статус:</dt>
+        <textarea readonly hidden><%= @card.status %></textarea>
+        <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+          <%= @card.status %>
+        </dd>
+      </div>
+
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Имя:</dt>
+        <textarea readonly hidden><%= @card.name %></textarea>
+        <dd
+          style="cursor:pointer;"
+          onclick="copy(this)"
+          class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+        >
+          <%= @card.name %>
+        </dd>
+        <script>
+          function copy(button) {
+              const element = button.previousElementSibling;
+                element.hidden = false;
+                  element.value = element.value.trim();
+                    element.select();
+                      document.execCommand("copy");
+                        element.blur();
+                          element.hidden = true;
+                          }
+                          
+        </script>
+      </div>
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Номер:</dt>
+        <textarea readonly hidden><%= @card.card_number %></textarea>
+        <dd
+          style="cursor:pointer;"
+          onclick="copy(this)"
+          class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+        >
+          <%= @card.card_number %>
+        </dd>
+        <script>
+          function copy(button) {
+              const element = button.previousElementSibling;
+                element.hidden = false;
+                  element.value = element.value.trim();
+                    element.select();
+                      document.execCommand("copy");
+                        element.blur();
+                          element.hidden = true;
+                          }
+                          
+        </script>
+      </div>
+
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Месяц:</dt>
+        <textarea readonly hidden><%= @card.month %></textarea>
+        <dd
+          style="cursor:pointer;"
+          onclick="copy(this)"
+          class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+        >
+          <%= @card.month %>
+        </dd>
+        <script>
+          function copy(button) {
+              const element = button.previousElementSibling;
+                element.hidden = false;
+                  element.value = element.value.trim();
+                    element.select();
+                      document.execCommand("copy");
+                        element.blur();
+                          element.hidden = true;
+                          }
+                          
+        </script>
+      </div>
+
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Год:</dt>
+        <textarea readonly hidden><%= @card.year %></textarea>
+        <dd
+          style="cursor:pointer;"
+          onclick="copy(this)"
+          class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+        >
+          <%= @card.year %>
+        </dd>
+        <script>
+          function copy(button) {
+              const element = button.previousElementSibling;
+                element.hidden = false;
+                  element.value = element.value.trim();
+                    element.select();
+                      document.execCommand("copy");
+                        element.blur();
+                          element.hidden = true;
+                          }
+                          
+        </script>
+      </div>
+
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Код:</dt>
+        <textarea readonly hidden><%= @card.code %></textarea>
+        <dd
+          style="cursor:pointer;"
+          onclick="copy(this)"
+          class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+        >
+          <%= @card.code %>
+        </dd>
+        <script>
+          function copy(button) {
+              const element = button.previousElementSibling;
+                element.hidden = false;
+                  element.value = element.value.trim();
+                    element.select();
+                      document.execCommand("copy");
+                        element.blur();
+                          element.hidden = true;
+                          }
+                          
+        </script>
+      </div>
+
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Тип:</dt>
+        <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+          <%= @card.type %>
+        </dd>
+      </div>
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Банк:</dt>
+        <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+          <%= @card.bank %>
+        </dd>
+      </div>
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Платежка:</dt>
+        <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+          <%= @card.system %>
+        </dd>
+      </div>
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-neutral-500">Топчик:</dt>
+        <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+          <%= (@card.top && "⭐") || "🪪" %>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div>
+<!-- This example requires Tailwind CSS v2.0+ -->
+<div class="mt-8 ">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-neutral-900">Транзакции</h1>
+    </div>
+  </div>
+  <div class="mt-8 flex flex-col">
+    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+          <table class="min-w-full divide-y divide-neutral-300">
+            <thead class="bg-neutral-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-neutral-900 sm:pl-6"
+                >
+                  ID
+                </th>
+                <th
+                  scope="col"
+                  class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-neutral-900"
+                >
+                  ID Сделки
+                </th>
+                <th
+                  scope="col"
+                  class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-neutral-900"
+                >
+                  Сумма
+                </th>
+                <th
+                  scope="col"
+                  class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-neutral-900"
+                >
+                  Дата
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-200 bg-white">
+              <%= for transaction <- @transactions do %>
+                <tr>
+                  <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-neutral-500 sm:pl-6">
+                    <%= transaction.id %>
+                  </td>
+
+                  <td class="whitespace-nowrap px-2 py-2 text-sm font-medium text-neutral-900">
+                    <%= link to: Routes.deal_show_path(@conn, :show, get_deal_by_transaction_id(transaction.id) )  do %>
+                      <%= get_deal_by_transaction_id(transaction.id).id %>
+                    <% end %>
+                  </td>
+
+                  <td class="whitespace-nowrap px-2 py-2 text-sm text-neutral-500">
+                    <%= transaction.amount %>
+                  </td>
+                  <td class="whitespace-nowrap px-2 py-2 text-sm text-neutral-500">
+                    <%= transaction.inserted_at %>
+                  </td>
+                </tr>
+              <% end %>
+              <!-- More transactions... -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

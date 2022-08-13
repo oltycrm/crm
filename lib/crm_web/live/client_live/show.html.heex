@@ -1,0 +1,267 @@
+<%= if @live_action in [:edit] do %>
+  <.crm_modal max_width="md" title={@page_title}>
+    <.live_component
+      module={CrmWeb.ClientLive.FormComponent}
+      id={@client.id}
+      title={@page_title}
+      action={@live_action}
+      client={@client}
+      return_to={Routes.client_show_path(@socket, :show, @client)}
+    />
+  </.crm_modal>
+<% end %>
+
+<%= if @live_action in [:new_deal] do %>
+  <.crm_modal max_width="md" title={@page_title}>
+    <div class="gap-5 text-sm">
+      <.live_component
+        module={CrmWeb.DealLive.FormComponent}
+        id={@deal.id || :new}
+        title={@page_title}
+        action={@live_action}
+        deal={@deal}
+        client={@client}
+        return_to={Routes.client_show_path(@socket, :show, @client)}
+      />
+    </div>
+  </.crm_modal>
+<% end %>
+<!--
+  This example requires Tailwind CSS v2.0+ 
+  
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/forms'),
+    ],
+  }
+  ```
+-->
+<!--
+  This example requires updating your template:
+
+  ```
+  <html class="h-full bg-neutral-100">
+  <body class="h-full">
+  ```
+-->
+<div class="min-h-full">
+  <main class="py-10">
+    <!-- Page header -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
+      <div class="flex items-center space-x-5">
+        <div>
+          <h1 class="text-2xl font-bold text-neutral-900"><%= @client.name %></h1>
+        </div>
+      </div>
+      <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
+        <%= live_redirect("Все Клиенты",
+          to: Routes.client_index_path(@socket, :index),
+          class:
+            "inline-flex items-center justify-center px-4 py-2 border border-neutral-300 shadow-sm text-sm font-medium rounded-md text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-blue-500"
+        ) %>
+
+        <%= link("Изменить",
+          to: Routes.client_show_path(@socket, :edit, @client),
+          class:
+            "inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-blue-500"
+        ) %>
+      </div>
+    </div>
+
+    <div class="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
+      <div class=" lg:col-start-1 lg:col-span-2">
+        <!-- Description list-->
+        <section aria-labelledby="applicant-information-title">
+          <div class="bg-white shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6 mb-4">
+              <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                  <!-- This example requires Tailwind CSS v2.0+ -->
+                  <div class="sm:flex sm:items-center ">
+                    <div class="sm:flex-auto">
+                      <h1 class="text-xl font-semibold text-neutral-900">Сделки</h1>
+                    </div>
+                    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                      <%= live_patch("Новая Сделка",
+                        class:
+                          "inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto",
+                        to: Routes.client_show_path(@socket, :new_deal, @client.id)
+                      ) %>
+                    </div>
+                  </div>
+                  <div class="mt-8 flex flex-col  border-neutral-200">
+                    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                        <table class="min-w-full divide-y divide-neutral-300">
+                          <thead>
+                            <tr>
+                              <th
+                                scope="col"
+                                class="py-3.5 text-left text-sm font-semibold text-neutral-900"
+                              >
+                                Продукт
+                              </th>
+                              <th
+                                scope="col"
+                                class="py-3.5 px-3 text-left text-sm font-semibold text-neutral-900"
+                              >
+                                Сумма
+                              </th>
+                              <th
+                                scope="col"
+                                class="py-3.5 px-3 text-left text-sm font-semibold text-neutral-900"
+                              >
+                                Статус
+                              </th>
+
+                              <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 md:pr-0">
+                                <span class="sr-only">Edit</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="divide-y divide-neutral-200">
+                            <%= for deal <- @client_deals do %>
+                              <tr>
+                                <td class="whitespace-nowrap py-4 px-3 text-sm text-neutral-900">
+                                  <%= live_redirect  to: Routes.deal_show_path(@socket, :show, deal), class: "text-blue-600 hover:text-blue-700"   do %>
+                                    <%= get_product_by_deal_id(deal.id).name %>
+                                  <% end %>
+                                </td>
+                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 sm:pl-6 md:pl-0">
+                                  <%= live_redirect  to: Routes.deal_show_path(@socket, :show, deal), class: "text-blue-600 hover:text-blue-700"   do %>
+                                    <div><%= deal.amount %> ₺</div>
+                                    <div><%= deal.rubles %> ₽</div>
+                                  <% end %>
+                                </td>
+
+                                <td class="whitespace-nowrap py-4 px-3 text-sm text-neutral-900">
+                                  <%= deal.status %>
+                                </td>
+
+                                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
+                                </td>
+                              </tr>
+                            <% end %>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <div class="bg-white shadow sm:rounded-lg mb-4">
+            <div class=" px-4 py-5 sm:px-6">
+              <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-neutral-500">WhatsApp</dt>
+                  <dd class="mt-1 text-sm text-neutral-900"><%= @client.wa %></dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-neutral-500">Avito</dt>
+                  <dd class="mt-1 text-sm text-neutral-900"><%= @client.avito %></dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-neutral-500">Telegram</dt>
+                  <dd class="mt-1 text-sm text-neutral-900"><%= @client.tg %></dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-neutral-500">Phone</dt>
+                  <dd class="mt-1 text-sm text-neutral-900"><%= @client.phone %></dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <div class="bg-white shadow sm:rounded-lg">
+            <div class=" px-4 py-5 sm:px-6">
+              <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                  <!-- This example requires Tailwind CSS v2.0+ -->
+                  <div class="sm:flex sm:items-center ">
+                    <div class="sm:flex-auto">
+                      <h1 class="text-xl font-semibold text-neutral-900">Sony Аккаунты</h1>
+                    </div>
+                    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                      <%= live_patch("Добавить Sony Account",
+                        class:
+                          "inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto",
+                        to: Routes.sony_account_index_path(@socket, :new, @client.id)
+                      ) %>
+                    </div>
+                  </div>
+                  <div class="mt-8 flex flex-col">
+                    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                        <table class="min-w-full divide-y divide-neutral-300">
+                          <thead>
+                            <tr>
+                              <th
+                                scope="col"
+                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-neutral-900 sm:pl-6 md:pl-0"
+                              >
+                                Email
+                              </th>
+                              <th
+                                scope="col"
+                                class="py-3.5 px-3 text-left text-sm font-semibold text-neutral-900"
+                              >
+                                Пароль
+                              </th>
+
+                              <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 md:pr-0">
+                                <span class="sr-only">Изменить</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="divide-y divide-neutral-200">
+                            <%= for sony_account <- @sony_accounts do %>
+                              <tr>
+                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 sm:pl-6 md:pl-0">
+                                  <%= sony_account.email %>
+                                </td>
+                                <td class="whitespace-nowrap py-4 px-3 text-sm text-neutral-900">
+                                  <%= sony_account.password %>
+                                </td>
+
+                                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
+                                  <%= link("Delete",
+                                    to: "#",
+                                    phx_click: "delete",
+                                    phx_value_id: sony_account.id,
+                                    data: [confirm: "Are you sure?"],
+                                    class: "text-red-600 hover:text-red-900"
+                                  ) %>
+
+                                  <%= live_patch("Edit",
+                                    to:
+                                      Routes.sony_account_index_path(@socket, :edit, sony_account),
+                                    class: "ml-3 text-blue-600 hover:text-blue-900"
+                                  ) %>
+                                </td>
+                              </tr>
+                            <% end %>
+                            <!-- More people... -->
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </section>
+        <!-- Comments-->
+      </div>
+    </div>
+  </main>
+</div>

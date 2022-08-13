@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content={csrf_token_value()} />
+    <%= csrf_meta_tag() %>
+    <%= live_title_tag(assigns[:page_title] || "Crm", suffix: " · Phoenix Framework") %>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
+    <script
+      defer
+      phx-track-static
+      type="text/javascript"
+      src={Routes.static_path(@conn, "/assets/app.js")}
+    >
+    </script>
+
+    <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js">
+    </script>
+    <.color_scheme_switch_js />
+  </head>
+  <body class="bg-neutral-100">
+    <!--
+  This example requires Tailwind CSS v2.0+ 
+  
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/forms'),
+    ],
+  }
+  ```
+-->
+    <div class="h-[100vh] flex" x-data="{ open: false, openChatMenu: false }">
+      <div class="flex-1 flex flex-col overflow-auto h-full">
+        <%= @inner_content %>
+      </div>
+    </div>
+  </body>
+</html>

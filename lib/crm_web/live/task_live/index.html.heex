@@ -1,0 +1,95 @@
+<%= if @live_action in [:new, :edit] do %>
+  <.crm_modal title={@task.name}>
+    <.live_component
+      module={CrmWeb.TaskLive.FormComponent}
+      id={@task.id || :new}
+      title={@page_title}
+      action={@live_action}
+      task={@task}
+      return_to={Routes.task_index_path(@socket, :index)}
+    />
+  </.crm_modal>
+<% end %>
+
+<div>
+  <.section_heading_with_action
+    title="Tasks"
+    button_title="New Task!"
+    button_link={Routes.task_index_path(@socket, :new)}
+  />
+</div>
+<.tasks>
+  <.task_group task_group_title="New" class="bg-blue-50">
+    <%= for task <- @tasks, task.status == :new do %>
+      <.task
+        due_date={task.due_date}
+        title={task.name}
+        manager={task.description}
+        id={"task-#{task.id}"}
+        to={Routes.task_index_path(@socket, :edit, task)}
+      />
+    <% end %>
+  </.task_group>
+  <.task_group task_group_title="In Work" class="bg-green-50">
+    <%= for task <- @tasks, task.status == :in_work do %>
+      <.task
+        due_date={task.due_date}
+        title={task.name}
+        manager={task.description}
+        id={"task-#{task.id}"}
+        to={Routes.task_index_path(@socket, :edit, task)}
+      />
+    <% end %>
+  </.task_group>
+  <.task_group task_group_title="Closed" class="bg-orange-50">
+    <%= for task <- @tasks, task.status == :closed do %>
+      <.task
+        due_date={task.due_date}
+        title={task.name}
+        manager={task.description}
+        id={"task-#{task.id}"}
+        to={Routes.task_index_path(@socket, :edit, task)}
+      />
+    <% end %>
+  </.task_group>
+</.tasks>
+
+<table class="hidden">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Due date</th>
+      <th>Closed date</th>
+      <th>Closed status</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="tasks">
+    <%= for task <- @tasks do %>
+      <tr id={"task-#{task.id}"}>
+        <td><%= task.name %></td>
+        <td><%= task.description %></td>
+        <td><%= task.due_date %></td>
+        <td><%= task.closed_date %></td>
+        <td><%= task.closed_status %></td>
+
+        <td>
+          <span>
+            <%= live_redirect("Show", to: Routes.task_show_path(@socket, :show, task)) %>
+          </span>
+          <span><%= live_patch("Edit", to: Routes.task_index_path(@socket, :edit, task)) %></span>
+          <span>
+            <%= link("Delete",
+              to: "#",
+              phx_click: "delete",
+              phx_value_id: task.id,
+              data: [confirm: "Are you sure?"]
+            ) %>
+          </span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -7,7 +7,7 @@ defmodule Crm.MixProject do
       version: "0.1.0",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:gettext] ++ Mix.compilers(),
+      # compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -49,7 +49,11 @@ defmodule Crm.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:cachex, "~> 3.4"}
+      {:cachex, "~> 3.4"},
+      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
+      {:crm_components, git: "https://github.com/alexvyber/crm_components.git", tag: "v0.1.1"},
+      {:phoenix_pubsub, "~> 2.0"},
+      {:bcrypt_elixir, "~> 3.0"}
     ]
   end
 
@@ -61,10 +65,10 @@ defmodule Crm.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup"],
+      "setup": ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "ecto.reset": ["ecto.drop --force-drop", "ecto.setup"],
+      "test": ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"]
     ]
   end

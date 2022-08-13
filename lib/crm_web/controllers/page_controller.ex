@@ -4,4 +4,8 @@ defmodule CrmWeb.PageController do
   def index(conn, _params) do
     render(conn, "index.html")
   end
+
+  def components(conn, _params) do
+    render(conn, "components.html")
+  end
 end

@@ -1,0 +1,446 @@
+<%= if @live_action in [:eedit] do %>
+  <.modal return_to={Routes.deal_show_path(@socket, :show, @deal)}>
+    <.live_component
+      module={CrmWeb.DealLive.FormComponent}
+      id={@deal.id}
+      title={@page_title}
+      action={@live_action}
+      deal={@deal}
+      return_to={Routes.deal_show_path(@socket, :show, @deal)}
+    />
+  </.modal>
+<% end %>
+
+<%= if @live_action in [:edit] do %>
+  <.crm_modal title={@page_title}>
+    <.live_component
+      module={CrmWeb.DealLive.FormComponent}
+      id={@deal.id}
+      title={@page_title}
+      action={@live_action}
+      deal={@deal}
+      return_to={Routes.deal_show_path(@socket, :show, @deal)}
+    />
+  </.crm_modal>
+<% end %>
+
+<div x-data="{ shit: document.referrer }" class="min-h-full">
+  <main class="py-10">
+    <!-- Page header -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
+      <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
+        <%= live_redirect("Все Лиды",
+          to: Routes.deal_index_path(@socket, :lead),
+          class:
+            "inline-flex items-center justify-center px-4 py-2 border border-neutral-300 shadow-sm text-sm font-medium rounded-md text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-blue-500"
+        ) %>
+
+        <%= live_patch("Изменить",
+          to: Routes.deal_show_path(@socket, :edit, @deal),
+          class:
+            "inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-blue-500"
+        ) %>
+      </div>
+    </div>
+
+    <div class="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
+      <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+        <!-- Description list-->
+        <section aria-labelledby="applicant-information-title">
+          <div class="bg-white shadow sm:rounded-lg">
+            <!-- This example requires Tailwind CSS v2.0+ -->
+            <div class="border-t border-neutral-200 px-4 py-5 sm:px-6">
+              <!-- This example requires Tailwind CSS v2.0+ -->
+              <div class="sm:flex sm:items-center">
+                <div class="sm:flex-auto">
+                  <h1 class="text-xl font-semibold text-orange-500">Транзакции</h1>
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                  <%= live_patch("Добавить!",
+                    class:
+                      "inline-flex items-center justify-center rounded-md border border-transparent bg-orange-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto",
+                    #  to: Routes.transaction_index_path(@socket, :new, @deal.id, 99)
+                    to:
+                      CrmWeb.Router.Helpers.transaction_index_path(
+                        CrmWeb.Endpoint,
+                        :new,
+                        @deal.id,
+                        @card.id
+                      )
+                  ) %>
+                </div>
+              </div>
+              <div class="mt-4 flex flex-col">
+                <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                    <table class="min-w-full divide-y divide-neutral-300">
+                      <thead>
+                        <tr>
+                          <th
+                            scope="col"
+                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-neutral-900 sm:pl-6 md:pl-0"
+                          >
+                            Сумма
+                          </th>
+                          <th
+                            scope="col"
+                            class="py-3.5 px-3 text-left text-sm font-semibold text-neutral-900"
+                          >
+                            Карта
+                          </th>
+
+                          <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 md:pr-0">
+                            <span class="sr-only">Изменить</span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-neutral-200">
+                        <%= for transaction <- @transactions do %>
+                          <tr>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 sm:pl-6 md:pl-0">
+                              <%= transaction.amount %>
+                            </td>
+                            <td class="whitespace-nowrap py-4 px-3 text-sm text-neutral-900">
+                              <.link
+                                to={
+                                  Routes.card_path(
+                                    @socket,
+                                    :show,
+                                    Crm.Cards.get_card!(transaction.card_id)
+                                  )
+                                }
+                                class="text-blue-600 hover:text-blue-900 ml-2 flex flex-row justify-between"
+                              >
+                                <%= get_card_by_transaction_id(transaction.id).name <>
+                                  String.slice(
+                                    get_card_by_transaction_id(transaction.id).card_number,
+                                    14..20
+                                  ) %>
+                              </.link>
+                            </td>
+
+                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
+                              <%= link("Удалить",
+                                to: "#",
+                                phx_click: "delete_transaction",
+                                phx_value_id: transaction.id,
+                                data: [confirm: "Are you sure?"],
+                                class: "text-red-600 hover:text-red-900"
+                              ) %>
+                            </td>
+                          </tr>
+                        <% end %>
+                        <!-- More people... -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
+        <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
+          <h2 id="timeline-title" class="text-lg font-medium text-neutral-900">
+            Card <%= @card.id %>
+          </h2>
+
+          <div class=" border-neutral-200">
+            <dl class="sm:divide-y sm:divide-neutral-200">
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Статус:</dt>
+                <textarea readonly hidden><%= @card.status %></textarea>
+                <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+                  <%= @card.status %>
+                </dd>
+              </div>
+
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Имя:</dt>
+                <textarea readonly hidden><%= @card.name %></textarea>
+                <dd
+                  style="cursor:pointer;"
+                  onclick="copy(this)"
+                  class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+                >
+                  <%= @card.name %>
+                </dd>
+                <script>
+                  function copy(button) {
+                      const element = button.previousElementSibling;
+                        element.hidden = false;
+                          element.value = element.value.trim();
+                            element.select();
+                              document.execCommand("copy");
+                                element.blur();
+                                  element.hidden = true;
+                                  }
+                                  
+                </script>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Номер:</dt>
+                <textarea readonly hidden><%= @card.card_number %></textarea>
+                <dd
+                  style="cursor:pointer;"
+                  onclick="copy(this)"
+                  class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+                >
+                  <%= @card.card_number %>
+                </dd>
+                <script>
+                  function copy(button) {
+                      const element = button.previousElementSibling;
+                        element.hidden = false;
+                          element.value = element.value.trim();
+                            element.select();
+                              document.execCommand("copy");
+                                element.blur();
+                                  element.hidden = true;
+                                  }
+                                  
+                </script>
+              </div>
+
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Месяц:</dt>
+                <textarea readonly hidden><%= @card.month %></textarea>
+                <dd
+                  style="cursor:pointer;"
+                  onclick="copy(this)"
+                  class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+                >
+                  <%= @card.month %>
+                </dd>
+                <script>
+                  function copy(button) {
+                      const element = button.previousElementSibling;
+                        element.hidden = false;
+                          element.value = element.value.trim();
+                            element.select();
+                              document.execCommand("copy");
+                                element.blur();
+                                  element.hidden = true;
+                                  }
+                                  
+                </script>
+              </div>
+
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Год:</dt>
+                <textarea readonly hidden><%= @card.year %></textarea>
+                <dd
+                  style="cursor:pointer;"
+                  onclick="copy(this)"
+                  class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+                >
+                  <%= @card.year %>
+                </dd>
+                <script>
+                  function copy(button) {
+                      const element = button.previousElementSibling;
+                        element.hidden = false;
+                          element.value = element.value.trim();
+                            element.select();
+                              document.execCommand("copy");
+                                element.blur();
+                                  element.hidden = true;
+                                  }
+                                  
+                </script>
+              </div>
+
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Код:</dt>
+                <textarea readonly hidden><%= @card.code %></textarea>
+                <dd
+                  style="cursor:pointer;"
+                  onclick="copy(this)"
+                  class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full"
+                >
+                  <%= @card.code %>
+                </dd>
+                <script>
+                  function copy(button) {
+                      const element = button.previousElementSibling;
+                        element.hidden = false;
+                          element.value = element.value.trim();
+                            element.select();
+                              document.execCommand("copy");
+                                element.blur();
+                                  element.hidden = true;
+                                  }
+                                  
+                </script>
+              </div>
+
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Тип:</dt>
+                <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+                  <%= @card.type %>
+                </dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Банк:</dt>
+                <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+                  <%= @card.bank %>
+                </dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Платежка:</dt>
+                <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+                  <%= @card.system %>
+                </dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-2 sm:gap-4 ">
+                <dt class="text-sm font-medium text-neutral-500">Топчик:</dt>
+                <dd class="mt-1 text-sm text-neutral-900 sm:mt-0 sm:col-span-1 w-full">
+                  <%= (@card.top && "⭐") || "🪪" %>
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="mt-6 flex flex-col justify-stretch">
+            <%= link("Новая Карта",
+              to: "#",
+              phx_click: "new_card",
+              phx_value_id: @deal.id,
+              data: [confirm: "Are you sure?"],
+              class:
+                "inline-flex items-center justify-center 
+            px-4 py-2 border border-transparent text-sm font-medium rounded-md 
+            shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            ) %>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
+      <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+        <!-- Description list-->
+        <section aria-labelledby="applicant-information-title">
+          <div class="bg-white shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6">
+              <%= live_redirect to: Routes.client_show_path(@socket, :show, @client), class: "text-blue-600 hover:text-blue-900 " do %>
+                <div class="text-xl mb-3 text-blue-500 hover:text-blue-600">
+                  <%= @client.name %>
+                </div>
+              <% end %>
+
+              <h2
+                id="applicant-information-title"
+                class="text-lg leading-6 font-medium text-neutral-900"
+              >
+                <%= @deal.amount %> ₺
+              </h2>
+              <h2
+                id="applicant-information-title"
+                class="text-lg leading-6 font-medium text-neutral-900"
+              >
+                <%= @deal.rubles %> ₽
+              </h2>
+              <p class="mt-1 max-w-2xl text-md font-bold text-green-600"><%= @deal.status %></p>
+            </div>
+            <div class="border-t border-neutral-200 px-4 py-5 sm:px-6">
+              <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-neutral-500">WhatsApp</dt>
+                  <dd class="mt-1 text-md text-neutral-900"><%= @client.wa %></dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-neutral-500">Avito</dt>
+                  <dd class="mt-1 text-sm text-neutral-900"><%= @client.avito %></dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-neutral-500">Telegram</dt>
+                  <dd class="mt-1 text-sm text-neutral-900"><%= @client.tg %></dd>
+                </div>
+                <div class="sm:col-span-1">
+                  <dt class="text-sm font-medium text-neutral-500">Phone</dt>
+                  <dd class="mt-1 text-sm text-neutral-900"><%= @client.phone %></dd>
+                </div>
+                <div class="sm:col-span-2"></div>
+              </dl>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
+      <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+        <!-- Description list-->
+        <section aria-labelledby="applicant-information-title">
+          <div class="bg-white shadow sm:rounded-lg">
+            <!-- This example requires Tailwind CSS v2.0+ -->
+            <div class="border-t border-neutral-200 px-4 py-5 sm:px-6">
+              <div class="sm:flex-auto">
+                <h1 class="text-lg font-semibold text-neutral-600">Sony Аккаунты</h1>
+              </div>
+
+              <div class="mt-4 flex flex-col">
+                <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                    <table class="min-w-full divide-y divide-neutral-300">
+                      <thead>
+                        <tr>
+                          <th
+                            scope="col"
+                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-neutral-900 sm:pl-6 md:pl-0"
+                          >
+                            Email
+                          </th>
+                          <th
+                            scope="col"
+                            class="py-3.5 px-3 text-left text-sm font-semibold text-neutral-900"
+                          >
+                            Пароль
+                          </th>
+
+                          <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 md:pr-0">
+                            <span class="sr-only">Edit</span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-neutral-200">
+                        <%= for sony_account <- @sony_accounts do %>
+                          <tr>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 sm:pl-6 md:pl-0">
+                              <%= sony_account.email %>
+                            </td>
+                            <td class="whitespace-nowrap py-4 px-3 text-sm text-neutral-900">
+                              <%= sony_account.password %>
+                            </td>
+
+                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
+                              <%= link("Delete",
+                                to: "#",
+                                phx_click: "delete",
+                                phx_value_id: sony_account.id,
+                                data: [confirm: "Are you sure?"],
+                                class: "text-red-600 hover:text-red-900"
+                              ) %>
+
+                              <%= live_patch("Edit",
+                                to: Routes.sony_account_index_path(@socket, :edit, sony_account),
+                                class: "ml-3 text-blue-600 hover:text-blue-900"
+                              ) %>
+                            </td>
+                          </tr>
+                        <% end %>
+                        <!-- More people... -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>

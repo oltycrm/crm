@@ -1,0 +1,19 @@
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.client_show_path(@socket, :show, @client)}>
+    <.live_component
+      module={CrmWeb.SonyAccountLive.FormComponent}
+      id={@sony_account.id || :new}
+      title={@page_title}
+      action={@live_action}
+      sony_account={@sony_account}
+      client={@client}
+      return_to={Routes.client_show_path(@socket, :show, @client)}
+    />
+  </.modal>
+<% end %>
+
+<%= if @live_action in [:delete] do %>
+  <.modal return_to={Routes.client_show_path(@socket, :show, @client)}>
+    <p>SHIT</p>
+  </.modal>
+<% end %>

@@ -1,0 +1,127 @@
+<div>
+  <.form
+    let={f}
+    for={@changeset}
+    id="task-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save"
+    class="flex h-full flex-col overflow-y-auto bg-white "
+  >
+    <div class="flex-1">
+      <div class="space-y-6 py-6 sm:space-y-0 sm:divide-y sm:divide-neutral-200 sm:py-0">
+        <!-- Project name -->
+        <div class="space-y-1 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+          <div>
+            <%= label(f, :name,
+              class: "block text-sm font-medium text-neutral-900 sm:mt-px sm:pt-2"
+            ) %>
+          </div>
+          <div class="sm:col-span-2">
+            <%= text_input(f, :name,
+              class:
+                "block w-full rounded-md border-neutral-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            ) %>
+            <%= error_tag(f, :name) %>
+          </div>
+        </div>
+        <!-- Project description -->
+        <div class="space-y-1 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+          <div>
+            <%= label(f, :description,
+              class: "block text-sm font-medium text-neutral-900 sm:mt-px sm:pt-2"
+            ) %>
+          </div>
+          <div class="sm:col-span-2">
+            <%= textarea(f, :description,
+              rows: 3,
+              class:
+                "block w-full rounded-md border border-neutral-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            ) %>
+            <%= error_tag(f, :description) %>
+          </div>
+        </div>
+
+        <div class="space-y-1 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+          <div>
+            <%= label(f, :due_date,
+              class: "block text-sm font-medium text-neutral-900 sm:mt-px sm:pt-2"
+            ) %>
+          </div>
+          <div class="sm:col-span-2">
+            <.datetime_local_input
+              form={f}
+              field={:due_date}
+              class="block w-full rounded-md border border-neutral-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            />
+
+            <%= error_tag(f, :due_date) %>
+          </div>
+        </div>
+
+        <div class="space-y-1 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+          <div>
+            <%= label(f, :closed_date,
+              class: "block text-sm font-medium text-neutral-900 sm:mt-px sm:pt-2"
+            ) %>
+          </div>
+          <div class="sm:col-span-2">
+            <.datetime_local_input
+              form={f}
+              field={:closed_date}
+              class="block w-full rounded-md border border-neutral-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            />
+
+            <%= error_tag(f, :closed_date) %>
+          </div>
+        </div>
+
+        <div class="space-y-1 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+          <div>
+            <%= label(f, :status,
+              class: "block text-sm font-medium text-neutral-900 sm:mt-px sm:pt-2"
+            ) %>
+          </div>
+
+          <%= select(f, :status, Ecto.Enum.values(Crm.Tasks.Task, :status),
+            prompt: "Choose a value",
+            class:
+              "mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          ) %>
+          <%= error_tag(f, :status) %>
+        </div>
+
+        <div class="space-y-1 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+          <div>
+            <%= label(f, :closed_status,
+              class: "block text-sm font-medium text-neutral-900 sm:mt-px sm:pt-2"
+            ) %>
+          </div>
+
+          <%= select(f, :closed_status, Ecto.Enum.values(Crm.Tasks.Task, :closed_status),
+            prompt: "Choose a value",
+            class:
+              "mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          ) %>
+          <%= error_tag(f, :closed_status) %>
+        </div>
+
+        <div class="flex-shrink-0 border-t border-neutral-200 px-4 py-5 sm:px-6">
+          <div class="flex justify-end space-x-3">
+            <!--   <button
+              type="button"
+              class="rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-700 shadow-sm hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Cancel
+            </button> -->
+            <%= submit("Save",
+              phx_disable_with: "Saving...",
+              class:
+                "inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            ) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </.form>
+</div>

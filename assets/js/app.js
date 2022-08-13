@@ -1,6 +1,9 @@
+import Alpine from "alpinejs";
+window.Alpine = Alpine;
+Alpine.start();
+
 // We import the CSS which is extracted to its own file by esbuild.
 // Remove this line if you add a your own CSS build pipeline (e.g postcss).
-import "../css/app.css"
 
 // If you want to use Phoenix channels, run `mix help phx.gen.channel`
 // to get started and then uncomment the line below.
@@ -20,26 +23,88 @@ import "../css/app.css"
 //
 
 // Include phoenix_html to handle method=PUT/DELETE in forms and buttons.
-import "phoenix_html"
+import "phoenix_html";
 // Establish Phoenix Socket and LiveView configuration.
-import {Socket} from "phoenix"
-import {LiveSocket} from "phoenix_live_view"
-import topbar from "../vendor/topbar"
+import { Socket } from "phoenix";
+import { LiveSocket } from "phoenix_live_view";
 
-let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+import topbar from "../vendor/topbar";
+
+import Hooks from "./hooks";
+
+// let Hooks = {}
+
+let scrollAt = () => {
+  let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  let scrollHeight =
+    document.documentElement.scrollHeight || document.body.scrollHeight;
+  let clientHeight = document.documentElement.clientHeight;
+
+  return (scrollTop / (scrollHeight - clientHeight)) * 100;
+};
+
+Hooks.InfiniteScroll = {
+  page() {
+    return this.el.dataset.page;
+  },
+  mounted() {
+    this.pending = this.page();
+    window.addEventListener("scroll", (e) => {
+      if (this.pending == this.page() && scrollAt() > 90) {
+        this.pending = this.page() + 1;
+        this.pushEvent("load-more", {});
+      }
+    });
+  },
+  updated() {
+    this.pending = this.page();
+  },
+};
+
+let csrfToken = document
+  .querySelector("meta[name='csrf-token']")
+  .getAttribute("content");
+let liveSocket = new LiveSocket("/live", Socket, {
+  hooks: Hooks,
+  params: { _csrf_token: csrfToken },
+});
 
 // Show progress bar on live navigation and form submits
-topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
-window.addEventListener("phx:page-loading-start", info => topbar.show())
-window.addEventListener("phx:page-loading-stop", info => topbar.hide())
+topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });
+window.addEventListener("phx:page-loading-start", (info) => topbar.show());
+window.addEventListener("phx:page-loading-stop", (info) => topbar.hide());
 
 // connect if there are any LiveViews on the page
-liveSocket.connect()
+liveSocket.connect();
 
 // expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
-window.liveSocket = liveSocket
+onDocReady(() => {
+  if (!liveSocket.boundTopLevelEvents) {
+    [...document.querySelectorAll("[phx-hook]")].map((hookEl) => {
+      console.log("asdasdf");
+      let hookName = hookEl.getAttribute("phx-hook");
+      let hook = Hooks[hookName];
 
+      if (hook.deadViewCompatible) {
+        let mountedFn = hook.mounted.bind({ ...hook, el: hookEl });
+        mountedFn();
+      }
+    });
+  }
+});
+
+function onDocReady(fn) {
+  // see if DOM is already available
+  if (
+    document.readyState === "complete" ||
+    document.readyState === "interactive"
+  ) {
+    // call on next available tick
+    setTimeout(fn, 1);
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+}

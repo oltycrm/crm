@@ -1,0 +1,194 @@
+<div class="sm:flex sm:items-center">
+  <div class="sm:flex-auto">
+    <h1 class="text-xl font-semibold text-neutral-900">МЕРТВЫЕ наАхрен Карты</h1>
+  </div>
+  <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none"></div>
+</div>
+<div class="pt-6">
+  <div class="">
+    <div class="border-b border-neutral-200">
+      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        <!-- Current: "border-blue-500 text-blue-600", Default: "border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300" -->
+        <%= link("Все Карты",
+          to: Routes.card_path(@conn, :index),
+          class:
+            "border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+        ) %>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+  function data() {
+      return {
+          sortBy: "",
+          sortAsc: false,
+          sortByColumn($event) {
+              if (this.sortBy === $event.target.innerText) {
+                  if (this.sortAsc) {
+                      this.sortBy = "";
+                      this.sortAsc = false;
+                  } else {
+                      this.sortAsc = !this.sortAsc;
+                  }
+              } else {
+                  this.sortBy = $event.target.innerText;
+              }
+
+              let rows = this.getTableRows()
+                  .sort(
+                      this.sortCallback(
+                          Array.from($event.target.parentNode.children).indexOf(
+                              $event.target
+                          )
+                      )
+                  )
+                  .forEach((tr) => {
+                      this.$refs.tbody.appendChild(tr);
+                  });
+          },
+          getTableRows() {
+              return Array.from(this.$refs.tbody.querySelectorAll("tr"));
+          },
+          getCellValue(row, index) {
+              return row.children[index].innerText;
+          },
+          sortCallback(index) {
+              return (a, b) =>
+                  ((row1, row2) => {
+                      return row1 !== "" &&
+                          row2 !== "" &&
+                          !isNaN(row1) &&
+                          !isNaN(row2)
+                          ? row1 - row2
+                          : row1.toString().localeCompare(row2);
+                  })(
+                      this.getCellValue(this.sortAsc ? a : b, index),
+                      this.getCellValue(this.sortAsc ? b : a, index)
+                  );
+          }
+      };
+  }
+</script>
+
+<div x-data="data()">
+  <div class="mt-8 flex flex-col">
+    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+          <table class="min-w-full divide-y divide-neutral-300">
+            <thead class="bg-white">
+              <tr>
+                <th
+                  @click="sortByColumn"
+                  scope="col"
+                  class="cursor-pointer select-none whitespace-nowrap py-3.5 pl-3 pr-2 text-left text-sm font-semibold text-neutral-900 sm:pl-4 "
+                >
+                  Карта
+                </th>
+                <th
+                  @click="sortByColumn"
+                  scope="col"
+                  class="cursor-pointer select-none whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-neutral-900"
+                >
+                  Использования
+                </th>
+                <th
+                  @click="sortByColumn"
+                  scope="col"
+                  class="cursor-pointer select-none whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-neutral-900"
+                >
+                  Статус
+                </th>
+                <th
+                  @click="sortByColumn"
+                  scope="col"
+                  class="cursor-pointer select-none whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-neutral-900"
+                >
+                  Последнее <br /> Использование
+                </th>
+                <th
+                  @click="sortByColumn"
+                  scope="col"
+                  class="cursor-pointer select-none whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-neutral-900"
+                >
+                  Банк
+                </th>
+                <th
+                  @click="sortByColumn"
+                  scope="col"
+                  class="cursor-pointer select-none whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-neutral-900"
+                >
+                  Тип
+                </th>
+
+                <th
+                  @click="sortByColumn"
+                  scope="col"
+                  class="cursor-pointer select-none whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-neutral-900"
+                >
+                  Баланс
+                </th>
+                <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6">
+                  <span class="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody x-ref="tbody">
+              <%= for card <- @cards do %>
+                <%= if card.status == :dead do %>
+                  <tr>
+                    <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-neutral-900 sm:pl-2">
+                      <.link
+                        to={Routes.card_path(@conn, :show, card)}
+                        class="text-blue-600 hover:text-blue-900 ml-2 flex flex-row justify-between"
+                      >
+                        <div><%= List.last(String.split(card.name, " ")) %></div>
+
+                        <div class="ml-2 font-bold">
+                          <%= List.last(String.split(card.full, " ")) %>
+                        </div>
+                      </.link>
+                    </td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm text-neutral-900">
+                      <%= length(Crm.Transactions.number_of_transactions_by_card(card.id)) %>
+                    </td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm text-black">
+                      <%= card.status %>
+                    </td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm font-medium text-neutral-900">
+                      <%= Crm.Transactions.get_time_of_last_transaction(card.id).inserted_at %>
+                    </td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm font-medium text-neutral-900">
+                      <%= card.bank %>
+                    </td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm font-medium text-neutral-900">
+                      <%= card.type %>
+                    </td>
+
+                    <td class="whitespace-nowrap px-2 py-2 text-sm text-neutral-500">
+                      <%= card.balance %>
+                    </td>
+                    <td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                      <%= link("Delete",
+                        to: Routes.card_path(@conn, :delete, card),
+                        method: :delete,
+                        data: [confirm: "Are you sure?"],
+                        class: "text-red-500 hover:text-red-700"
+                      ) %>
+                      <%= link("Edit",
+                        to: Routes.card_path(@conn, :edit, card),
+                        class: "text-blue-600 hover:text-blue-900 ml-2"
+                      ) %>
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

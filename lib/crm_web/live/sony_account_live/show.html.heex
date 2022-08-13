@@ -1,0 +1,35 @@
+<h1>Show Sony account</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.sony_account_show_path(@socket, :show, @sony_account)}>
+    <.live_component
+      module={CrmWeb.SonyAccountLive.FormComponent}
+      id={@sony_account.id}
+      title={@page_title}
+      action={@live_action}
+      sony_account={@sony_account}
+      return_to={Routes.sony_account_show_path(@socket, :show, @sony_account)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+  <li>
+    <strong>Email:</strong>
+    <%= @sony_account.email %>
+  </li>
+
+  <li>
+    <strong>Password:</strong>
+    <%= @sony_account.password %>
+  </li>
+</ul>
+
+<span>
+  <%= live_patch("Edit",
+    to: Routes.sony_account_show_path(@socket, :edit, @sony_account),
+    class: "button"
+  ) %>
+</span>
+|
+<span><%= live_redirect("Back", to: Routes.sony_account_index_path(@socket, :index)) %></span>

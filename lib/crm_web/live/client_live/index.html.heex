@@ -1,0 +1,173 @@
+<%= if @live_action in [:eedit] do %>
+  <.modal return_to={Routes.client_index_path(@socket, :index)}>
+    <.live_component
+      module={CrmWeb.ClientLive.FormComponent}
+      id={@client.id || :new}
+      title={@page_title}
+      action={@live_action}
+      client={@client}
+      return_to={Routes.client_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.crm_modal max_width="md" title={@page_title}>
+    <div class="gap-5 text-sm">
+      <.live_component
+        module={CrmWeb.ClientLive.FormComponent}
+        id={@client.id || :new}
+        title={@page_title}
+        action={@live_action}
+        client={@client}
+        return_to={Routes.client_index_path(@socket, :index)}
+      />
+    </div>
+  </.crm_modal>
+<% end %>
+
+<div class="sm:flex sm:items-center">
+  <div class="sm:flex-auto">
+    <.h2 label="Клинеты" />
+    <p class="mt-2 text-lg text-neutral-700"><%= @page_title %></p>
+  </div>
+
+  <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+    <.button
+      link_type="live_patch"
+      to={Routes.client_index_path(@socket, :new)}
+      label="Добавить Клиента"
+    />
+  </div>
+</div>
+
+<nav class="border-t border-neutral-200 px-4 flex items-center justify-between sm:px-0 mt-4">
+  <%= if @page > 1 do %>
+    <div class="-mt-px w-0 flex-1 flex">
+      <%= live_patch to: Routes.client_index_path(@socket, :index, page: @page - 1) , class: "border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-neutral-500 hover:text-neutral-700 hover:border-neutral-300" do %>
+        <svg
+          class="mr-3 h-5 w-5 text-neutral-400"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        Пред.
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="hidden md:-mt-px md:flex">
+    <%= for i <- (@page - 5)..(@page + 5), i > 0 do %>
+      <%= if @page == i  do %>
+        <%= live_patch("#{i}",
+          to: Routes.client_index_path(@socket, :index, page: i),
+          class:
+            "border-blue-500 text-blue-600 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium"
+        ) %>
+      <% else %>
+        <%= live_patch("#{i}",
+          to: Routes.client_index_path(@socket, :index, page: i),
+          class:
+            "border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium"
+        ) %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="-mt-px w-0 flex-1 flex justify-end">
+    <%= live_patch  to: Routes.client_index_path(@socket, :index, page: @page + 1), class: "border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-neutral-500 hover:text-neutral-700 hover:border-neutral-300" do %>
+      След.
+      <!-- Heroicon name: solid/arrow-narrow-right -->
+      <svg
+        class="ml-3 h-5 w-5 text-neutral-400"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    <% end %>
+  </div>
+</nav>
+
+<div class="p-1 mt-5 overflow-auto">
+  <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg ">
+    <.table>
+      <thead class="bg-white">
+        <.tr>
+          <.th scope="col" class="sm:pl-6 pl-4 pr-3">Имя</.th>
+          <.th scope="col" class="lg:table-cell hidden">Avito</.th>
+          <.th scope="col" class="md:table-cell hidden">Telegram</.th>
+          <.th scope="col" class="sm:table-cell hidden">WhatsApp</.th>
+          <.th scope="col">Телефон</.th>
+          <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+            <span class="sr-only">Edit</span>
+          </th>
+        </.tr>
+      </thead>
+      <tbody class="divide-y divide-neutral-200 bg-white">
+        <%= if @clients != nil do %>
+          <%= for client <- @clients do %>
+            <.tr>
+              <.td class="w-full max-w-0  pr-3 text-sm font-medium text-neutral-900 sm:w-auto sm:max-w-none ">
+                <%= live_redirect  to: Routes.client_show_path(@socket, :show, client) do %>
+                  <div class="flex items-center">
+                    <div class="-">
+                      <div class="font-medium text-neutral-900"><%= client.name %></div>
+                    </div>
+                  </div>
+
+                  <dl class="font-normal lg:hidden">
+                    <dd class="mt-1  text-neutral-700"><%= client.avito %></dd>
+                    <dd class="mt-1  text-neutral-500 md:hidden"><%= client.tg %></dd>
+                    <dd class="mt-1  text-neutral-500 sm:hidden"><%= client.wa %></dd>
+                  </dl>
+                <% end %>
+              </.td>
+              <.td class="hidden px-3 py-4 text-sm text-neutral-500 lg:table-cell">
+                <%= client.avito %>
+              </.td>
+              <.td class="hidden px-3 py-4 text-sm text-neutral-500 md:table-cell">
+                <%= client.tg %>
+              </.td>
+              <.td class="hidden px-3 py-4 text-sm text-neutral-500 sm:table-cell">
+                <%= client.wa %>
+              </.td>
+              <.td class="px-3 py-4 text-sm text-neutral-500 align-text-top sm:align-middle">
+                <%= client.phone %>
+              </.td>
+              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                <div class="flex flex-col justify-between">
+                  <%= link("Удалить",
+                    to: "#",
+                    phx_click: "delete",
+                    phx_value_id: client.id,
+                    data: [confirm: "Are you sure?"],
+                    class: "text-red-600 hover:text-red-700"
+                  ) %>
+
+                  <%= live_patch("Изменить",
+                    to: Routes.client_index_path(@socket, :edit, client),
+                    class: "text-green-600 hover:text-green-700 mt-2"
+                  ) %>
+                </div>
+              </td>
+            </.tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </.table>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.deal_show_path(@socket, :show, @deal)}>
+    <.live_component
+      module={CrmWeb.TransactionLive.FormComponent}
+      id={@transaction.id || :new}
+      title={@page_title}
+      action={@live_action}
+      deal={@deal}
+      transaction={@transaction}
+      return_to={Routes.deal_show_path(@socket, :show, @deal)}
+    />
+  </.modal>
+<% end %>
+
+<%= if @live_action in [ :new_transaction] do %>
+  <.modal return_to={Routes.deal_show_path(@socket, :show, @deal)}>
+    <.live_component
+      module={CrmWeb.TransactionLive.FormComponent}
+      id={@transaction.id || :new}
+      title={@page_title}
+      action={@live_action}
+      deal={@deal}
+      transaction={@transaction}
+      return_to={Routes.deal_show_path(@socket, :show, @deal)}
+    />
+  </.modal>
+<% end %>
+
+<div>
+  <div id="transaction">
+    <%= for transaction <- @transaction_collection do %>
+    <% end %>
+  </div>
+</div>

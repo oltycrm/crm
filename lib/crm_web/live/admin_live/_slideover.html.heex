@@ -1,0 +1,91 @@
+<div
+  class="fixed inset-0 overflow-hidden"
+  aria-labelledby="slide-over-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="absolute inset-0 overflow-hidden">
+    <!-- Background overlay, show/hide based on slide-over state. -->
+    <div class="absolute inset-0" aria-hidden="true"></div>
+
+    <div class="pointer-events-none fixed inset-y-0 left-0 flex max-w-full pr-10 sm:pr-16">
+      <!--
+        Slide-over panel, show/hide based on slide-over state.
+
+        Entering: "transform transition ease-in-out duration-500 sm:duration-700"
+          From: "translate-x-full"
+          To: "translate-x-0"
+        Leaving: "transform transition ease-in-out duration-500 sm:duration-700"
+          From: "translate-x-0"
+          To: "translate-x-full"
+      -->
+      <div class="pointer-events-auto w-screen max-w-md">
+        <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+          <div class="p-6">
+            <div class="flex items-start justify-between">
+              <h2 class="text-lg font-medium text-neutral-900" id="slide-over-title">Team</h2>
+              <div class="ml-3 flex h-7 items-center">
+                <button
+                  type="button"
+                  class="rounded-md bg-white text-neutral-400 hover:text-neutral-500 focus:ring-2 focus:ring-blue-500"
+                >
+                  <span class="sr-only">Close panel</span>
+                  <!-- Heroicon name: outline/x -->
+                  <svg
+                    class="h-6 w-6"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="border-b border-neutral-200">
+            <div class="px-6">
+              <nav class="-mb-px flex space-x-6">
+                <!-- Current: "border-blue-500 text-blue-600", Default: "border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300" -->
+                <a
+                  href="#"
+                  class="border-blue-500 text-blue-600 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm"
+                >
+                  All
+                </a>
+
+                <a
+                  href="#"
+                  class="border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm"
+                >
+                  Online
+                </a>
+
+                <a
+                  href="#"
+                  class="border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm"
+                >
+                  Offline
+                </a>
+              </nav>
+            </div>
+          </div>
+          <ul role="list" class="flex-1 divide-y divide-neutral-200 overflow-y-auto">
+            <%= render("_slideover.user.html", assigns) %>
+            <%= render("_slideover.user.html", assigns) %>
+            <%= render("_slideover.user.html", assigns) %>
+            <%= render("_slideover.user.html", assigns) %>
+            <!-- More people... -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

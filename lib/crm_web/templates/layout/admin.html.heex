@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content={csrf_token_value()} />
+    <%= csrf_meta_tag() %>
+    <%= live_title_tag(assigns[:page_title] || "Crm", suffix: " · Phoenix Framework") %>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
+    <script
+      defer
+      phx-track-static
+      type="text/javascript"
+      src={Routes.static_path(@conn, "/assets/app.js")}
+    >
+    </script>
+    <.color_scheme_switch_js />
+  </head>
+  <body class="bg-white">
+    <div class="h-[100vh] flex" x-data="{ open : false }">
+      <%= render("_nav.html",
+        menu_items: [
+          %{
+            to: Routes.deal_index_path(@conn, :lead),
+            title: "Сделки",
+            notification: length(Crm.Deals.list_deals_by_status(:lead)),
+            icon: &CrmComponents.Heroicons.Outline.currency_dollar/1
+          },
+          %{
+            to: Routes.chat_index_path(@conn, :index),
+            title: "Chats",
+            icon: &CrmComponents.Heroicons.Outline.chat/1
+          },
+          %{
+            to: Routes.client_index_path(@conn, :index),
+            title: "Клиенты",
+            icon: &CrmComponents.Heroicons.Outline.users/1
+          },
+          %{
+            to: Routes.task_index_path(@conn, :index),
+            title: "Задачи",
+            notification: length(Crm.Tasks.list_tasks_by_status(:new)),
+            icon: &CrmComponents.Heroicons.Outline.pencil_alt/1
+          },
+          %{
+            to: Routes.card_path(@conn, :index),
+            title: "Карты",
+            icon: &CrmComponents.Heroicons.Outline.credit_card/1
+          },
+          %{
+            to: Routes.product_path(@conn, :index),
+            title: "Продукты",
+            icon: &CrmComponents.Heroicons.Outline.cube/1
+          },
+          %{
+            to: Routes.user_settings_path(@conn, :edit),
+            title: "Настройки",
+            icon: &CrmComponents.Heroicons.Outline.cog/1
+          }
+        ]
+      ) %>
+      <div class="flex-1 flex flex-col overflow-auto ">
+        <%= render("_header_two.html", assigns) %>
+        <div class=" md:rounded-lg shadow ring-1 ring-neutral-100 bg-neutral-40 md:m-2">
+          <div class="pt-20 md:p-8 bg-">
+            <.container>
+              <%= @inner_content %>
+            </.container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

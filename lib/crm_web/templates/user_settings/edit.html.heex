@@ -1,0 +1,168 @@
+<.form
+  let={f}
+  for={@password_changeset}
+  action={Routes.user_settings_path(@conn, :update)}
+  id="update_password"
+>
+</.form>
+
+<main class="lg:grid lg:grid-cols-12 lg:gap-x-5">
+  <aside class="py-6 px-2 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3">
+    <nav class="space-y-1">
+      <!-- Current: "bg-neutral-50 text-orange-600 hover:bg-white", Default: "text-neutral-900 hover:text-neutral-900 hover:bg-neutral-50" -->
+      <%= link  to: Routes.user_session_path(@conn, :delete),    method: "delete",    class: "text-neutral-900 hover:text-neutral-900 hover:bg-neutral-50 group rounded-md px-3 py-2 flex items-center text-sm font-medium"              do %>
+        <svg
+          class="text-neutral-400 group-hover:text-neutral-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6"
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+          />
+        </svg>
+        <span class="truncate">Выйти</span>
+      <% end %>
+    </nav>
+  </aside>
+  <!-- Payment details -->
+  <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
+    <section aria-labelledby="payment-details-heading">
+      <.form
+        let={f}
+        for={@email_changeset}
+        action={Routes.user_settings_path(@conn, :update)}
+        id="update_email"
+      >
+        <%= if @email_changeset.action do %>
+          <div class="alert alert-danger">
+            <p>Oops, something went wrong! Please check the errors below.</p>
+          </div>
+        <% end %>
+        <%= hidden_input(f, :action, name: "action", value: "update_email") %>
+        <%= password_input(f, :current_password,
+          required: true,
+          name: "current_password",
+          id: "current_password_for_email",
+          hidden: true
+        ) %>
+
+        <div class="shadow sm:rounded-md sm:overflow-hidden">
+          <div class="bg-white py-6 px-4 sm:p-6">
+            <div>
+              <h2
+                id="payment-details-heading"
+                class="text-lg leading-6 font-medium text-neutral-900"
+              >
+                Email details
+              </h2>
+              <p class="mt-1 text-sm text-neutral-500">Update your email info</p>
+            </div>
+
+            <div class="mt-6 grid grid-cols-4 gap-6">
+              <div class="col-span-4 sm:col-span-2">
+                <%= label(f, :email, class: "block text-sm font-medium text-neutral-700") %>
+                <%= email_input(f, :email,
+                  required: true,
+                  class:
+                    "mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-900 focus:border-neutral-900 sm:text-sm"
+                ) %>
+                <%= error_tag(f, :email) %>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-3 bg-neutral-50 text-right sm:px-6">
+            <%= submit("Change Email",
+              class:
+                "bg-blue-500 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
+            ) %>
+          </div>
+        </div>
+      </.form>
+    </section>
+    <section aria-labelledby="payment-details-heading">
+      <.form
+        let={f}
+        for={@password_changeset}
+        action={Routes.user_settings_path(@conn, :update)}
+        id="update_password"
+      >
+        <%= if @password_changeset.action do %>
+          <div class="alert alert-danger">
+            <p>Oops, something went wrong! Please check the errors below.</p>
+          </div>
+        <% end %>
+        <%= hidden_input(f, :action, name: "action", value: "update_password") %>
+
+        <div class="shadow sm:rounded-md sm:overflow-hidden">
+          <div class="bg-white py-6 px-4 sm:p-6">
+            <div>
+              <h2
+                id="payment-details-heading"
+                class="text-lg leading-6 font-medium text-neutral-900"
+              >
+                Password details
+              </h2>
+              <p class="mt-1 text-sm text-neutral-500">Update your password info</p>
+            </div>
+
+            <div class="mt-6 grid grid-cols-4 gap-6">
+              <div class="col-span-4 sm:col-span-2">
+                <%= label(f, :password, "New password",
+                  class: "block text-sm font-medium text-neutral-700"
+                ) %>
+                <%= password_input(f, :password,
+                  required: true,
+                  class:
+                    "mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-900 focus:border-neutral-900 sm:text-sm"
+                ) %>
+                <%= error_tag(f, :password) %>
+              </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-4 gap-6">
+              <div class="col-span-4 sm:col-span-2">
+                <%= label(f, :password_confirmation, "Confirm password",
+                  class: "block text-sm font-medium text-neutral-700"
+                ) %>
+                <%= password_input(f, :password_confirmation,
+                  required: true,
+                  class:
+                    "mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-900 focus:border-neutral-900 sm:text-sm"
+                ) %>
+                <%= error_tag(f, :password_confirmation) %>
+              </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-4 gap-6">
+              <div class="col-span-4 sm:col-span-2">
+                <%= label(f, :current_password, "Current password",
+                  class: "block text-sm font-medium text-neutral-700"
+                ) %>
+                <%= password_input(f, :current_password,
+                  required: true,
+                  name: "current_password",
+                  id: "current_password_for_password",
+                  class:
+                    "mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-900 focus:border-neutral-900 sm:text-sm"
+                ) %>
+                <%= error_tag(f, :current_password) %>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-3 bg-neutral-50 text-right sm:px-6">
+            <%= submit("Change Password",
+              class:
+                "bg-blue-500 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
+            ) %>
+          </div>
+        </div>
+      </.form>
+    </section>
+  </div>
+</main>
