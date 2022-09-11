@@ -80,7 +80,7 @@ defmodule CrmWeb.DealLive.DealsTable do
                       <dd class="mt-1  text-neutral-700 md<:hidden">
                         <%= Crm.Clients.get_client!(deal.client_id).name %>
                       </dd>
-                      <dd class="mt-1  text-neutral-500 sm:hidden">
+                      <dd class="mt-1  text-neutral-900 font-medium sm:hidden">
                         <%= Crm.Accounts.get_user!(deal.user_id).name %>
                       </dd>
                     </dl>
@@ -173,11 +173,11 @@ defmodule CrmWeb.DealLive.DealsTable do
                       <div class="text-neutral-900"><%= get_product_by_deal_id(deal.id).name %></div>
                     </td>
 
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-neutral-500">
+                    <td class="whitespace-nowrap px-3 py-4 text-sm  text-neutral-900 font-medium">
                       <%= get_user_by_deal_id(deal.id).name %>
                     </td>
                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                      <%= link("Delete",
+                      <%= link("Удалить",
                         to: "#",
                         phx_click: "delete",
                         phx_value_id: deal.id,
@@ -185,7 +185,7 @@ defmodule CrmWeb.DealLive.DealsTable do
                         data: [confirm: "Are you sure?"]
                       ) %>
 
-                      <%= live_redirect("Edit", to: Routes.deal_index_path(@socket, :edit, deal)) %>
+                      <%= live_redirect("Изменить", to: Routes.deal_index_path(@socket, :edit, deal)) %>
                     </td>
                   </tr>
                 <% end %>

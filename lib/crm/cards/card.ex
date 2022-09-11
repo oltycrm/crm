@@ -31,7 +31,7 @@ defmodule Crm.Cards.Card do
       :year,
       :code,
       :status,
-      :balance,
+      # :balance,
       :type,
       :bank,
       :system,
@@ -40,11 +40,11 @@ defmodule Crm.Cards.Card do
     |> validate_required([
       :name,
       :card_number,
-      :month,
-      :year,
-      :code,
+      # :month,
+      # :year,
+      # :code,
       :status,
-      :balance,
+      # :balance,
       :type,
       :bank
     ])

@@ -63,7 +63,7 @@ defmodule CrmWeb.TransactionLive.FormComponent do
     alive_cards = Crm.Cards.list_cards_by_statuses(["Платит", "Пополняет", "Привязывается"])
 
     Enum.map(alive_cards, fn %Crm.Cards.Card{name: name, card_number: card_number, id: id} ->
-      {"#{name} #{String.slice(card_number, 14..20)}", id}
+      {"#{name} - #{card_number}", id}
     end)
   end
 end

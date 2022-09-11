@@ -20,7 +20,11 @@ defmodule Crm.Deals.Deal do
   @doc false
   def changeset(deal, attrs) do
     deal
-    |> cast(attrs, [:amount, :status, :product_id, :user_id, :client_id, :rubles, :closed_status])
-    |> validate_required([:amount, :status, :product_id, :user_id])
+    |> cast(attrs, [
+      :amount,
+      :status, :product_id, :user_id, :client_id, :rubles, :closed_status])
+    |> validate_required([
+      :amount,
+       :status, :product_id, :user_id])
   end
 end

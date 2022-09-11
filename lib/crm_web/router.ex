@@ -151,10 +151,15 @@ defmodule CrmWeb.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", CrmWeb do
-  #   pipe_through :api
-  # end
+  pipeline :api do
+    plug(:accepts, ["json"])
+  end
+
+  scope "/api", CrmWeb do
+    pipe_through :api
+
+    # get("/", ApiController, :index)
+  end
 
   # Enables LiveDashboard only for development
   #
@@ -183,9 +188,5 @@ defmodule CrmWeb.Router do
 
   #     forward("/mailbox", Plug.Swoosh.MailboxPreview)
   #   end
-  # end
-
-  # pipeline :api do
-  #   plug(:accepts, ["json"])
   # end
 end

@@ -27,11 +27,11 @@
             notification: length(Crm.Deals.list_deals_by_status(:lead)),
             icon: &CrmComponents.Heroicons.Outline.currency_dollar/1
           },
-          %{
-            to: Routes.chat_index_path(@conn, :index),
-            title: "Chats",
-            icon: &CrmComponents.Heroicons.Outline.chat/1
-          },
+#          %{
+ #           to: Routes.chat_index_path(@conn, :index),
+  #          title: "Chats",
+   #         icon: &CrmComponents.Heroicons.Outline.chat/1
+    #      },
           %{
             to: Routes.client_index_path(@conn, :index),
             title: "Клиенты",
